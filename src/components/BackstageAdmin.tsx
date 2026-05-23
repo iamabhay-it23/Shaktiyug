@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { 
   Shield, ToggleLeft, ToggleRight, Check, X, AlertOctagon, 
   Send, Bot, Play, Pause, Calendar, Plus, Trash2, Sliders, Users, 
-  HelpCircle, MessageCircle, AlertCircle, Edit, Star, Compass, Sparkles 
+  HelpCircle, MessageCircle, AlertCircle, Edit, Star, Compass, Sparkles, Lock 
 } from 'lucide-react';
 
 interface Section {
@@ -74,7 +74,26 @@ interface Announcement {
 }
 
 export default function BackstageAdmin() {
+  const [currentUser, setCurrentUser] = useState<any>(() => {
+    const saved = localStorage.getItem('shakti_vogue_user');
+    return saved ? JSON.parse(saved) : null;
+  });
+
   const [activeSubTab, setActiveSubTab] = useState<'modules' | 'users' | 'queries' | 'live' | 'announcements' | 'ai'>('modules');
+
+  // Synchronize dynamic login shifts from other components
+  useEffect(() => {
+    const handleAuthSync = () => {
+      const saved = localStorage.getItem('shakti_vogue_user');
+      setCurrentUser(saved ? JSON.parse(saved) : null);
+    };
+    window.addEventListener('vogue-auth-change', handleAuthSync);
+    window.addEventListener('storage', handleAuthSync);
+    return () => {
+      window.removeEventListener('vogue-auth-change', handleAuthSync);
+      window.removeEventListener('storage', handleAuthSync);
+    };
+  }, []);
   
   // Data State
   const [config, setConfig] = useState<OwnerConfig | null>(null);
@@ -369,6 +388,82 @@ export default function BackstageAdmin() {
         <Shield className="w-5 h-5 animate-spin mr-3 text-[#ff2d55]" />
         SYNCHRONIZING SECURE VIP TERMINAL...
       </div>
+    );
+  }
+
+  if (!currentUser || currentUser.role !== 'owner') {
+    return (
+      <section className="min-h-screen py-32 px-4 md:px-8 container mx-auto flex items-center justify-center">
+        {/* Secure Gated Screen */}
+        <div className="max-w-xl w-full p-8 bg-[#090308]/90 border border-shakti-gold/30 rounded-sm relative overflow-hidden text-center space-y-8 shadow-2xl my-6 animate-fade-in font-sans">
+          <div className="absolute -right-20 -top-20 w-44 h-44 bg-shakti-gold/5 blur-3xl rounded-full" />
+          
+          <div className="space-y-4">
+            <div className="w-16 h-16 rounded-full bg-shakti-gold/10 border border-shakti-gold/40 flex items-center justify-center mx-auto mb-4 animate-pulse">
+              <Lock className="w-8 h-8 text-shakti-gold" />
+            </div>
+            <h4 className="font-serif text-3xl italic text-white leading-tight">Master Backstage Gated</h4>
+            <p className="text-xs text-white/50 leading-relaxed font-light">
+              The Backstage Control Desk contains raw audition entries, digital designs pipelines, and system configuration terminals. Please authenticate as the Platform Owner to proceed.
+            </p>
+          </div>
+
+          {/* Inline fast passcode unlock */}
+          <div className="p-5 bg-white/[0.02] border border-white/5 rounded-xs space-y-4">
+            <span className="text-[8px] uppercase tracking-widest text-[#ff2d55] font-black block font-mono">Quick Console Unlock Passcode</span>
+            <div className="flex gap-2">
+              <input
+                required
+                type="password"
+                placeholder="ENTER PIN CODE (shakti2026)"
+                id="admin-quick-passcode-console"
+                className="flex-1 bg-white/5 border border-white/10 p-2 text-xs text-white placeholder:text-white/20 outline-none focus:border-shakti-gold text-center font-mono"
+              />
+              <button
+                onClick={() => {
+                  const pinEl = document.getElementById("admin-quick-passcode-console") as HTMLInputElement;
+                  const pinValue = pinEl?.value;
+                  if (pinValue === 'shakti2026' || pinValue === 'admin') {
+                    const mockOwner = {
+                      name: "Platform Owner",
+                      email: "owner@shaktiyug.com",
+                      role: "owner"
+                    };
+                    localStorage.setItem('shakti_vogue_user', JSON.stringify(mockOwner));
+                    setCurrentUser(mockOwner);
+                    // notify nav
+                    window.dispatchEvent(new Event('vogue-auth-change'));
+                  } else {
+                    alert("Unauthorized Access Code. Passcode validation failed.");
+                  }
+                }}
+                className="px-4 py-2 bg-shakti-gold text-shakti-black text-[9px] uppercase tracking-widest font-black transition-all hover:bg-shakti-gold-light cursor-pointer select-none"
+              >
+                Authorize
+              </button>
+            </div>
+          </div>
+
+          <div className="pt-2 border-t border-white/5">
+            <button
+              onClick={() => {
+                const mockOwner = {
+                  name: "Demo Owner",
+                  email: "owner@shaktiyug.com",
+                  role: "owner"
+                };
+                localStorage.setItem('shakti_vogue_user', JSON.stringify(mockOwner));
+                setCurrentUser(mockOwner);
+                // notify nav
+                window.dispatchEvent(new Event('vogue-auth-change'));
+              }}
+              className="text-[9px] text-shakti-gold uppercase tracking-[0.25em] font-black hover:underline px-4 py-2 border border-shakti-gold/20 bg-shakti-gold/5 w-full transition-all cursor-pointer"
+            >
+              ⚡ Instant Demo Owner Bypass (1-Click)
+            </button>
+          </div>
+        </div>
+      </section>
     );
   }
 

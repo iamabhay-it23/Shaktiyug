@@ -15,11 +15,19 @@ const RECENT_COLLABS = [
   { name: 'Akash Neo', role: 'Ramp', date: 'Aug 2025' },
 ];
 
-export default function ProfileDashboard() {
+export default function ProfileDashboard({ 
+  currentUser, 
+  onOpenLogin 
+}: { 
+  currentUser?: any; 
+  onOpenLogin?: () => void; 
+}) {
   return (
     <section className="min-h-screen py-32 px-6 container mx-auto">
-      <div className="flex flex-col mb-16">
-        <h2 className="font-serif text-5xl md:text-8xl italic mb-4 gold-text">Me. Shakti.</h2>
+      <div className="flex flex-col mb-16 animate-fade-in">
+        <h2 className="font-serif text-5xl md:text-8xl italic mb-4 gold-text">
+          {currentUser ? `Me. ${currentUser.name}.` : 'Me. Shakti.'}
+        </h2>
         <div className="h-[2px] bg-gradient-to-r from-shakti-gold to-transparent w-full" />
       </div>
 
@@ -38,26 +46,51 @@ export default function ProfileDashboard() {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-shakti-black via-transparent to-transparent" />
             <div className="absolute bottom-8 left-8">
-              <h3 className="font-serif text-4xl text-white italic">Vogue Artist</h3>
-              <p className="text-[10px] uppercase tracking-[0.5em] text-shakti-gold font-black mt-2">Level: Professional</p>
+              <h3 className="font-serif text-4xl text-white italic">
+                {currentUser ? currentUser.role : 'Vogue Artist'}
+              </h3>
+              <p className="text-[10px] uppercase tracking-[0.5em] text-shakti-gold font-black mt-2">
+                {currentUser ? `ALLIANCE: ${currentUser.role.toUpperCase()}` : 'Level: Professional'}
+              </p>
             </div>
           </motion.div>
+
+          {/* Secure Login Prompt on Profile */}
+          {!currentUser && onOpenLogin && (
+            <div className="p-5 border border-shakti-gold/25 bg-shakti-gold/5 rounded-xs space-y-3 font-sans">
+              <span className="text-[7.5px] uppercase tracking-[0.25em] text-shakti-gold font-black block">🔒 SECURE GUEST MODE</span>
+              <p className="text-[10.5px] text-white/60 leading-relaxed">
+                Unlock custom statistics, audit workflows, and persistent design vaults by identifying your member account.
+              </p>
+              <button
+                onClick={onOpenLogin}
+                className="w-full py-2 bg-gradient-to-r from-[#ff2d55] to-shakti-gold text-shakti-black text-[9px] uppercase tracking-widest font-black transition-all hover:opacity-95 cursor-pointer"
+              >
+                Sync Session Identity
+              </button>
+            </div>
+          )}
 
           <div className="space-y-4">
             <h4 className="text-[10px] uppercase tracking-[0.5em] text-white/30 font-bold">Contact Data</h4>
             <div className="space-y-2">
               <div className="flex items-center gap-3 text-xs text-shakti-gold-light">
                 <Mail className="w-3 h-3 text-shakti-gold" />
-                <span>vogue@shaktiyug.com</span>
+                <span>{currentUser ? currentUser.email : 'vogue@shaktiyug.com'}</span>
               </div>
               <div className="flex items-center gap-3 text-xs text-shakti-gold-light">
                 <Phone className="w-3 h-3 text-shakti-gold" />
                 <span>+91 9988-Shakti</span>
               </div>
-              <div className="flex items-center gap-3 text-xs text-shakti-gold-light">
+              <a 
+                href="https://www.instagram.com/the.shaktiyug?igsh=MTQycnI4NHFhdG1tcg==" 
+                target="_blank"  
+                rel="noopener noreferrer" 
+                className="flex items-center gap-3 text-xs text-shakti-gold-light hover:text-white transition-colors cursor-pointer"
+              >
                 <Instagram className="w-3 h-3 text-shakti-gold" />
-                <span>@shakti_vogue</span>
-              </div>
+                <span>{currentUser ? `@${currentUser.name.replace(/\s+/g, '_').toLowerCase()}` : '@the.shaktiyug'}</span>
+              </a>
             </div>
           </div>
         </div>

@@ -15,7 +15,7 @@ export default function AIChatbot() {
     {
       id: 'init',
       sender: 'assistant',
-      text: "Welcome, Creator. I am the Shaktiyug AI Vogue Oracle. Ask me about our collections, backstage walks, designers (Aman, Akash, Mahi), or how to submit your premier auditions.",
+      text: "Welcome, Creator. I am Shakti, your design & backstage companion here at Shaktiyug. How can I assist you with your queries, auditions, or collections today?",
       timestamp: new Date()
     }
   ]);
@@ -230,7 +230,7 @@ export default function AIChatbot() {
                   </div>
                 </div>
                 <div>
-                  <h4 className="text-xs font-serif italic text-white tracking-widest uppercase">VOGUE ORACLE</h4>
+                  <h4 className="text-xs font-serif italic text-white tracking-widest uppercase">SHAKTI</h4>
                   <div className="flex items-center gap-1.5 mt-0.5">
                     <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
                     <span className="text-[7.5px] uppercase tracking-[0.25em] text-white/40 font-mono">INTELLIGENCE MATRIX ACTIVE</span>
@@ -305,7 +305,7 @@ export default function AIChatbot() {
                 type="text"
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
-                placeholder={isListening ? "Listening with elegance..." : "Ask the Oracle anything..."}
+                placeholder={isListening ? "Listening with elegance..." : "Ask Shakti anything..."}
                 className="flex-1 bg-white/[0.03] border border-white/10 p-2.5 rounded-sm text-xs text-white placeholder-white/20 tracking-wider focus:border-shakti-gold outline-none transition-colors"
               />
 

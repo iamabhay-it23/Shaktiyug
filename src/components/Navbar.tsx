@@ -12,7 +12,19 @@ const NAV_ITEMS = [
   { name: 'Profile', icon: User, id: 'profile' },
 ];
 
-export default function Navbar({ active, setActive }: { active: string; setActive: (s: string) => void }) {
+export default function Navbar({ 
+  active, 
+  setActive, 
+  currentUser, 
+  onLogout, 
+  onOpenLogin 
+}: { 
+  active: string; 
+  setActive: (s: string) => void; 
+  currentUser: any; 
+  onLogout: () => void; 
+  onOpenLogin: () => void; 
+}) {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleSelect = (id: string) => {
@@ -57,9 +69,30 @@ export default function Navbar({ active, setActive }: { active: string; setActiv
 
         {/* Vogue In CTA & Mobile Toggle wrapper */}
         <div className="flex items-center gap-4">
-          <button className="fashion-button px-4 md:px-5 py-2 rounded-full text-[9px] md:text-[10px] uppercase tracking-widest font-bold hidden sm:inline-block">
-            <span>Vogue In</span>
-          </button>
+          {currentUser ? (
+            <div className="hidden sm:flex items-center gap-3">
+              <div className="flex flex-col text-right font-sans">
+                <span className="text-[9px] uppercase tracking-widest text-white font-black leading-none">{currentUser.name}</span>
+                <span className="text-[7.5px] font-mono text-shakti-gold uppercase tracking-widest mt-0.5 leading-none">
+                  {currentUser.role === 'owner' ? '👑 Owner' : currentUser.role}
+                </span>
+              </div>
+              <button 
+                onClick={onLogout}
+                className="px-3.5 py-1.5 bg-white/5 hover:bg-[#ff2d55]/15 border border-white/10 hover:border-[#ff2d55]/40 text-white/70 hover:text-white rounded-full text-[8.5px] uppercase tracking-widest font-black transition-all cursor-pointer select-none"
+                title="Suture Session"
+              >
+                Logout
+              </button>
+            </div>
+          ) : (
+            <button 
+              onClick={onOpenLogin}
+              className="fashion-button px-4 md:px-5 py-2 rounded-full text-[9px] md:text-[10px] uppercase tracking-widest font-bold hidden sm:inline-block cursor-pointer"
+            >
+              <span>Vogue In</span>
+            </button>
+          )}
 
           {/* Hamburger switch for custom side panel on Mobile */}
           <button
@@ -105,12 +138,39 @@ export default function Navbar({ active, setActive }: { active: string; setActiv
             </div>
 
             <div className="mt-auto mb-10 text-center">
-              <button className="fashion-button w-full py-3.5 text-xs text-center rounded-sm">
-                VOGUE MEMBER LOGIN
-              </button>
-              <p className="text-[9px] uppercase tracking-[0.4em] text-white/20 mt-4 italic">
-                Shaktiyug Collective • Infinite Elegance
-              </p>
+              {currentUser ? (
+                <div className="space-y-4">
+                  <div className="p-3 bg-white/[0.02] border border-white/5 rounded-xs font-sans">
+                    <span className="text-[8px] uppercase tracking-widest text-white/30 block font-black">Active Session</span>
+                    <h6 className="text-[11px] font-black text-white mt-0.5">{currentUser.name}</h6>
+                    <span className="text-[9px] text-shakti-gold block font-mono">{currentUser.role === 'owner' ? '👑 Platform Owner' : currentUser.role}</span>
+                  </div>
+                  <button 
+                    onClick={() => {
+                      onLogout();
+                      setIsOpen(false);
+                    }}
+                    className="w-full py-3 text-xs bg-[#ff2d55]/10 border border-[#ff2d55]/30 text-[#ff2d55] hover:bg-[#ff2d55] hover:text-white transition-all rounded-xs font-black uppercase tracking-widest cursor-pointer"
+                  >
+                    DISMANTLE SESSION
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <button 
+                    onClick={() => {
+                      onOpenLogin();
+                      setIsOpen(false);
+                    }}
+                    className="fashion-button w-full py-3.5 text-xs text-center rounded-sm cursor-pointer"
+                  >
+                    VOGUE MEMBER LOGIN
+                  </button>
+                  <p className="text-[9px] uppercase tracking-[0.4em] text-white/20 mt-4 italic">
+                    Shaktiyug Collective • Infinite Elegance
+                  </p>
+                </>
+              )}
             </div>
           </motion.div>
         )}

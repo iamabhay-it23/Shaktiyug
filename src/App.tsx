@@ -24,6 +24,7 @@ import LiveExperience from './components/LiveExperience';
 import BackstageAdmin from './components/BackstageAdmin';
 import AbhayCredit from './components/AbhayCredit';
 import GlobalLotusClicks from './components/GlobalLotusClicks';
+import VogueLoginModal from './components/VogueLoginModal';
 
 const UNIVERSE_NAMES: Record<string, string> = {
   casting: 'Casting Board',
@@ -43,6 +44,31 @@ export default function App() {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const mainRef = useRef<HTMLDivElement>(null);
   const lastNavTime = useRef<number>(0);
+
+  const [currentUser, setCurrentUser] = useState<any>(() => {
+    const saved = localStorage.getItem('shakti_vogue_user');
+    return saved ? JSON.parse(saved) : null;
+  });
+  const [showVogueLoginModal, setShowVogueLoginModal] = useState(false);
+
+  const handleLogout = () => {
+    localStorage.removeItem('shakti_vogue_user');
+    setCurrentUser(null);
+    window.dispatchEvent(new Event('vogue-auth-change'));
+  };
+
+  useEffect(() => {
+    const handleSync = () => {
+      const saved = localStorage.getItem('shakti_vogue_user');
+      setCurrentUser(saved ? JSON.parse(saved) : null);
+    };
+    window.addEventListener('vogue-auth-change', handleSync);
+    window.addEventListener('storage', handleSync);
+    return () => {
+      window.removeEventListener('vogue-auth-change', handleSync);
+      window.removeEventListener('storage', handleSync);
+    };
+  }, []);
 
   const [isLiveGlobally, setIsLiveGlobally] = useState(false);
   const [liveTitle, setLiveTitle] = useState('');
@@ -102,7 +128,13 @@ export default function App() {
           >
             <BackgroundEffect />
             <BackgroundActors />
-            <Navbar active={activeNav} setActive={handleNavChange} />
+            <Navbar 
+              active={activeNav} 
+              setActive={handleNavChange} 
+              currentUser={currentUser}
+              onLogout={handleLogout}
+              onOpenLogin={() => setShowVogueLoginModal(true)}
+            />
 
             {/* 3D Cinematic Lotus Transition Overlay */}
             {isTransitioning && (
@@ -154,7 +186,12 @@ export default function App() {
                   {activeNav === 'casting' && <CastingBoard />}
                   {activeNav === 'dashboard' && <FashionHub />}
                   {activeNav === 'screening' && <BackstageRoom />}
-                  {activeNav === 'profile' && <ProfileDashboard />}
+                  {activeNav === 'profile' && (
+                    <ProfileDashboard 
+                      currentUser={currentUser} 
+                      onOpenLogin={() => setShowVogueLoginModal(true)} 
+                    />
+                  )}
                   {activeNav === 'live' && <LiveExperience />}
                   {activeNav === 'admin' && <BackstageAdmin />}
                 </motion.div>
@@ -275,7 +312,7 @@ export default function App() {
                   <AbhayCredit />
                   <div className="flex gap-8 text-[9px] uppercase tracking-[0.4em] text-white/20 font-bold">
                     <a href="#" className="hover:text-white transition-colors">TIKTOK</a>
-                    <a href="#" className="hover:text-white transition-colors">INSTAGRAM</a>
+                    <a href="https://www.instagram.com/the.shaktiyug?igsh=MTQycnI4NHFhdG1tcg==" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">INSTAGRAM</a>
                     <a href="#" className="hover:text-white transition-colors">BEHANCE</a>
                   </div>
                 </div>
@@ -284,6 +321,15 @@ export default function App() {
               <AIChatbot />
               <FeedbackModal />
               <GlobalLotusClicks />
+              <VogueLoginModal 
+                isOpen={showVogueLoginModal}
+                onClose={() => setShowVogueLoginModal(false)}
+                onLoginSuccess={(userData) => {
+                  localStorage.setItem('shakti_vogue_user', JSON.stringify(userData));
+                  setCurrentUser(userData);
+                  window.dispatchEvent(new Event('vogue-auth-change'));
+                }}
+              />
           </motion.main>
         )}
       </AnimatePresence>

@@ -945,7 +945,7 @@ app.post("/api/chat", async (req, res) => {
   }
 
   const systemInstruction = 
-    `You are the Shaktiyug AI Vogue Oracle, an ultra-premium, witty, and deeply intelligent couture design assistant.
+    `You are Shakti, an ultra-premium, witty, and deeply intelligent couture design assistant here at Shaktiyug.
     You answer questions for users, models, runway creators, styles specialists, and audition applicants on the Shaktiyug portal.
     
     Portals overview:
@@ -959,7 +959,7 @@ app.post("/api/chat", async (req, res) => {
   try {
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
-      const responseText = `*The Aura sensor sparkles gently.* Yes! As the Shaktiyug Oracle, I feel your alignment with our neon pink lotus aesthetics. We are currently pacing our drapes to a smooth 128 BPM. How can I guide your trajectory across our digital runway? Configure your GEMINI_API_KEY to unlock advanced deep-realm responses!`;
+      const responseText = `*The Aura sensor sparkles gently.* Yes! As Shakti, I feel your alignment with our neon pink lotus aesthetics. We are currently pacing our drapes to a smooth 128 BPM. How can I guide your trajectory across our digital runway? Configure your GEMINI_API_KEY to unlock advanced deep-realm responses!`;
       return res.json({ response: responseText });
     }
 

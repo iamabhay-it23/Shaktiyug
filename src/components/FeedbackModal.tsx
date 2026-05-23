@@ -38,6 +38,11 @@ export default function FeedbackModal() {
   const [category, setCategory] = useState('suggestion'); // bug, suggestion, feature, rating
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [hasSubmitted, setHasSubmitted] = useState(false);
+
+  useEffect(() => {
+    setHasSubmitted(localStorage.getItem('shakti_feedback_submitted') === 'true');
+  }, []);
 
   // Fetch feedbacks for admin view
   const fetchFeedbacks = async () => {
@@ -51,10 +56,10 @@ export default function FeedbackModal() {
   };
 
   useEffect(() => {
-    if (isOpen || isAdminView) {
+    if ((isOpen || isAdminView) && !hasSubmitted) {
       fetchFeedbacks();
     }
-  }, [isOpen, isAdminView]);
+  }, [isOpen, isAdminView, hasSubmitted]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -82,9 +87,11 @@ export default function FeedbackModal() {
         setComment('');
         setSelectedRating(5);
         fetchFeedbacks();
+        localStorage.setItem('shakti_feedback_submitted', 'true');
         setTimeout(() => {
           setSuccess(false);
           setIsOpen(false);
+          setHasSubmitted(true);
         }, 1800);
       }
     } catch (err) {
@@ -93,6 +100,8 @@ export default function FeedbackModal() {
       setSubmitting(false);
     }
   };
+
+  if (hasSubmitted) return null;
 
   return (
     <>
