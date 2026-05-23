@@ -1,0 +1,6 @@
+{
+  "name": "Shaktiyug",
+  "description": "The ultimate plateau for fashion professionals, ramp walk artists, and style icons. Created by Aman, Akash, and Mahi.",
+  "requestFramePermissions": ["microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

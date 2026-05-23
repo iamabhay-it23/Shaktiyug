@@ -1,0 +1,80 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@theme {
+  --font-serif: "Playfair Display", serif;
+  --font-sans: "Inter", sans-serif;
+  --color-shakti-black: #050204;
+  --color-lotus-pink: #E0115F;
+  --color-shakti-gold: #D4AF37;
+  --color-shakti-gold-light: #F9E79F;
+  --color-shakti-gold-dark: #9A7B1D;
+  --color-soft-pink: #FFD1DC;
+}
+
+@layer base {
+  body {
+    @apply bg-shakti-black text-white font-sans overflow-x-hidden selection:bg-shakti-gold selection:text-shakti-black;
+  }
+}
+
+.gold-text {
+  background: linear-gradient(to bottom, #F9E79F 0%, #D4AF37 50%, #9A7B1D 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gold-border {
+  border: 1px solid transparent;
+  border-image: linear-gradient(to bottom right, #F9E79F, #D4AF37, #9A7B1D) 1;
+}
+
+.luxury-card {
+  @apply bg-[#0C050A] border border-white/5 transition-all duration-700 hover:border-shakti-gold/30 hover:shadow-[0_0_40px_rgba(212,175,55,0.05)];
+}
+
+.film-grain {
+  position: fixed;
+  top: -100%;
+  left: -100%;
+  width: 300%;
+  height: 300%;
+  background: url("https://www.transparenttextures.com/patterns/silk.png");
+  opacity: 0.08;
+  pointer-events: none;
+  z-index: 50;
+  animation: grain 8s steps(10) infinite;
+}
+
+@keyframes grain {
+  0%, 100% { transform:translate(0, 0) }
+  10% { transform:translate(-5%, -10%) }
+  20% { transform:translate(-15%, 5%) }
+  30% { transform:translate(7%, -25%) }
+  40% { transform:translate(-5%, 25%) }
+  50% { transform:translate(-15%, 10%) }
+  60% { transform:translate(15%, 0%) }
+  70% { transform:translate(0%, 15%) }
+  80% { transform:translate(3%, 35%) }
+  90% { transform:translate(-10%, 10%) }
+}
+
+.cinematic-vignette {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle, transparent 40%, #0F0208 100%);
+  pointer-events: none;
+  z-index: 40;
+}
+
+.fashion-button {
+  @apply relative overflow-hidden px-6 py-2 bg-transparent border border-shakti-gold/40 text-shakti-gold-light transition-all duration-500 backdrop-blur-sm uppercase tracking-[0.3em] font-bold;
+}
+
+.fashion-button:hover {
+  @apply bg-shakti-gold border-white/0 text-shakti-black shadow-[0_0_30px_rgba(212,175,55,0.3)];
+}
+
+.input-fashion {
+  @apply bg-transparent border-b border-lotus-pink/30 focus:border-lotus-pink outline-none py-2 transition-all duration-500 w-full;
+}
